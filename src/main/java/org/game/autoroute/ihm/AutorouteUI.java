@@ -10,15 +10,15 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import org.game.autoroute.controller.Autoroute;
 import org.game.autoroute.model.Carte;
 import org.game.autoroute.service.ActionService;
 import org.game.autoroute.utils.ConstantesUtils;
+
+import com.google.common.collect.Lists;
 
 public class AutorouteUI extends JFrame
 {
@@ -29,13 +29,18 @@ public class AutorouteUI extends JFrame
 
     private final ActionService actionService;
 
+    private final List<JButton> buttons;
+
+    private final List<Carte> cartes;
+
     /**
      * Create the frame.
      */
     public AutorouteUI(final Autoroute autoroute)
     {
         this.actionService = new ActionService();
-        final List<Carte> cartes = autoroute.getJeuDeCartes();
+        this.cartes = autoroute.getJeuDeCartes();
+        this.buttons = Lists.newArrayList();
 
         this.setTitle("Autoroute");
         this.setForeground(Color.WHITE);
@@ -57,7 +62,8 @@ public class AutorouteUI extends JFrame
         final JButton btnLeft1 = new JButton();
         panel.add(btnLeft1, "name_178267754051600");
         btnLeft1.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
-        btnLeft1.addActionListener(this.extracted(cartes, btnLeft1));
+        btnLeft1.addActionListener(this.extracted(btnLeft1));
+        this.buttons.add(btnLeft1);
 
         final JPanel panel1 = new JPanel();
         panelCards.add(panel1);
@@ -66,7 +72,8 @@ public class AutorouteUI extends JFrame
         final JButton btnLeft2 = new JButton();
         panel1.add(btnLeft2, "name_178316235153300");
         btnLeft2.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
-        btnLeft2.addActionListener(this.extracted(cartes, btnLeft2));
+        btnLeft2.addActionListener(this.extracted(btnLeft2));
+        this.buttons.add(btnLeft2);
 
         final JPanel panel2 = new JPanel();
         panelCards.add(panel2);
@@ -83,7 +90,8 @@ public class AutorouteUI extends JFrame
         final JButton btnMiddle1 = new JButton();
         panel3.add(btnMiddle1, "name_178440026501400");
         btnMiddle1.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
-        btnMiddle1.addActionListener(this.extracted(cartes, btnMiddle1));
+        btnMiddle1.addActionListener(this.extracted(btnMiddle1));
+        this.buttons.add(btnMiddle1);
 
         final JPanel panel4 = new JPanel();
         panelCards.add(panel4);
@@ -92,7 +100,8 @@ public class AutorouteUI extends JFrame
         final JButton btnMiddle2 = new JButton();
         panel4.add(btnMiddle2, "name_178461865085600");
         btnMiddle2.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
-        btnMiddle2.addActionListener(this.extracted(cartes, btnMiddle2));
+        btnMiddle2.addActionListener(this.extracted(btnMiddle2));
+        this.buttons.add(btnMiddle2);
 
         final JPanel panel5 = new JPanel();
         panelCards.add(panel5);
@@ -101,7 +110,8 @@ public class AutorouteUI extends JFrame
         final JButton btnMiddle3 = new JButton();
         panel5.add(btnMiddle3, "name_178478241699700");
         btnMiddle3.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
-        btnMiddle3.addActionListener(this.extracted(cartes, btnMiddle3));
+        btnMiddle3.addActionListener(this.extracted(btnMiddle3));
+        this.buttons.add(btnMiddle3);
 
         final JPanel panel6 = new JPanel();
         panelCards.add(panel6);
@@ -118,7 +128,8 @@ public class AutorouteUI extends JFrame
         final JButton btnRight1 = new JButton();
         panel7.add(btnRight1, "name_178624505634100");
         btnRight1.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
-        btnRight1.addActionListener(this.extracted(cartes, btnRight1));
+        btnRight1.addActionListener(this.extracted(btnRight1));
+        this.buttons.add(btnRight1);
 
         final JPanel panel8 = new JPanel();
         panelCards.add(panel8);
@@ -127,34 +138,34 @@ public class AutorouteUI extends JFrame
         final JButton btnRight2 = new JButton();
         panel8.add(btnRight2, "name_178636650147300");
         btnRight2.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
-        btnRight2.addActionListener(this.extracted(cartes, btnRight2));
+        btnRight2.addActionListener(this.extracted(btnRight2));
+        this.buttons.add(btnRight2);
 
         final JPanel panelDeck = new JPanel();
         this.contentPane.add(panelDeck);
         panelDeck.setLayout(new GridLayout(0, 3, 0, 0));
 
-        final JLabel lblNewLabel = new JLabel();
-        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        panelDeck.add(lblNewLabel);
+        final JButton btnDown = new JButton();
+        btnDown.setIcon(new ImageIcon(ConstantesUtils.ARROW_DOWN));
+        panelDeck.add(btnDown);
 
         final JButton btnDeck = new JButton();
         btnDeck.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_H));
         panelDeck.add(btnDeck);
 
-        final JLabel lblNewLabel1 = new JLabel();
-        panelDeck.add(lblNewLabel1);
+        final JButton btnUp = new JButton();
+        btnUp.setIcon(new ImageIcon(ConstantesUtils.ARROW_UP));
+        panelDeck.add(btnUp);
     }
 
-    private ActionListener extracted(final List<Carte> cartes, final JButton button)
+    private ActionListener extracted(final JButton button)
     {
         return new ActionListener()
         {
-
             @Override
             public void actionPerformed(final ActionEvent e)
             {
-                AutorouteUI.this.actionService.prendreCarte(cartes, button);
-
+                AutorouteUI.this.actionService.accept(AutorouteUI.this.cartes, button, AutorouteUI.this.buttons);
             }
         };
     }

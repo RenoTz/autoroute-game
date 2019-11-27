@@ -17,7 +17,16 @@ public class ActionService implements Serializable
 
     private static final Logger log = LoggerFactory.getLogger(ActionService.class);
 
-    public void prendreCarte(final List<Carte> cartes, final JButton button)
+    public void accept(final List<Carte> cartes, final JButton button, final List<JButton> buttons)
+    {
+        final int indexPrec = buttons.indexOf(button) != 0 ? buttons.indexOf(button) - 1 : 0;
+
+        if (buttons.indexOf(button) == 0 || !buttons.get(indexPrec).getIcon().toString().equals(button.getIcon().toString())) {
+            this.prendreCarte(cartes, button);
+        }
+    }
+
+    private void prendreCarte(final List<Carte> cartes, final JButton button)
     {
         final Carte carte = CarteUtils.getCarte(cartes);
         carte.setVisible(true);

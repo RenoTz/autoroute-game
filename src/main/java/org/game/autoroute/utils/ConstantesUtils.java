@@ -119,4 +119,8 @@ public class ConstantesUtils
 
     public static final String PEAGE = PATH_RESOURCES_IMG.concat("peages").concat(JPG);
 
+    public static final String ARROW_UP = PATH_RESOURCES_IMG.concat("arrow_up").concat(PNG);
+
+    public static final String ARROW_DOWN = PATH_RESOURCES_IMG.concat("arrow_down").concat(PNG);
+
 }
