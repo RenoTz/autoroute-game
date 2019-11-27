@@ -4,22 +4,27 @@ import java.awt.EventQueue;
 
 import org.game.autoroute.controller.Autoroute;
 import org.game.autoroute.ihm.AutorouteUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main
 {
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
+
     public static void main(final String[] args)
     {
         final Autoroute autoroute = new Autoroute();
 
         EventQueue.invokeLater(new Runnable()
         {
+            @Override
             public void run()
             {
                 try {
-                    final AutorouteUI frame = new AutorouteUI();
+                    final AutorouteUI frame = new AutorouteUI(autoroute);
                     frame.setVisible(true);
                 } catch (final Exception e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                 }
             }
         });

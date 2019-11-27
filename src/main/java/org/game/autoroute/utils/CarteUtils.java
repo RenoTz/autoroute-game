@@ -2,6 +2,7 @@ package org.game.autoroute.utils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.ImageIcon;
 
@@ -18,14 +19,14 @@ public class CarteUtils
 
         final List<Carte> jeuDeCartes = Lists.newArrayList();
         // 4 cartes de "UN"
-        final Carte asCarreau = new Carte(CarteEnum.AS, ColorEnum.CARREAU, new ImageIcon(ConstantesUtils.AS_CARREAU));
-        final Carte asCoeur = new Carte(CarteEnum.AS, ColorEnum.COEUR, new ImageIcon(ConstantesUtils.AS_COEUR));
-        final Carte asPique = new Carte(CarteEnum.AS, ColorEnum.PIQUE, new ImageIcon(ConstantesUtils.AS_PIQUE));
-        final Carte asTrefle = new Carte(CarteEnum.AS, ColorEnum.TREFLE, new ImageIcon(ConstantesUtils.AS_TREFLE));
-        jeuDeCartes.add(asCarreau);
-        jeuDeCartes.add(asCoeur);
-        jeuDeCartes.add(asPique);
-        jeuDeCartes.add(asTrefle);
+        /*
+         * final Carte asCarreau = new Carte(CarteEnum.AS, ColorEnum.CARREAU, new
+         * ImageIcon(ConstantesUtils.AS_CARREAU)); final Carte asCoeur = new Carte(CarteEnum.AS, ColorEnum.COEUR, new
+         * ImageIcon(ConstantesUtils.AS_COEUR)); final Carte asPique = new Carte(CarteEnum.AS, ColorEnum.PIQUE, new
+         * ImageIcon(ConstantesUtils.AS_PIQUE)); final Carte asTrefle = new Carte(CarteEnum.AS, ColorEnum.TREFLE, new
+         * ImageIcon(ConstantesUtils.AS_TREFLE)); jeuDeCartes.add(asCarreau); jeuDeCartes.add(asCoeur);
+         * jeuDeCartes.add(asPique); jeuDeCartes.add(asTrefle);
+         */
         // 4 cartes de "DEUX"
         final Carte deuxCarreau =
             new Carte(CarteEnum.DEUX, ColorEnum.CARREAU, new ImageIcon(ConstantesUtils.DEUX_CARREAU));
@@ -165,6 +166,20 @@ public class CarteUtils
         // on mélange les cartes
         CarteUtils.melangerJeuDeCartes(jeuDeCartes);
         return jeuDeCartes;
+    }
+
+    public static Carte getCarte(final List<Carte> cartes)
+    {
+
+        final Optional<Carte> carteOpt = cartes.stream().filter(c -> !c.isVisible()).findFirst();
+
+        if (carteOpt.isPresent()) {
+            return carteOpt.get();
+        } else {
+            cartes.forEach(c -> c.setVisible(false));
+            return getCarte(cartes);
+        }
+
     }
 
     public static void melangerJeuDeCartes(final List<Carte> jeuDeCartes)

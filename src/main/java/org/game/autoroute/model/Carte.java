@@ -2,6 +2,8 @@ package org.game.autoroute.model;
 
 import javax.swing.ImageIcon;
 
+import org.game.autoroute.utils.ConstantesUtils;
+
 public class Carte
 {
 
@@ -10,6 +12,8 @@ public class Carte
     private ColorEnum couleur;
 
     private ImageIcon image;
+
+    private boolean visible;
 
     public Carte(final CarteEnum carteEnum, final ColorEnum couleur, final ImageIcon image)
     {
@@ -45,7 +49,7 @@ public class Carte
 
     public ImageIcon getImage()
     {
-        return this.image;
+        return this.isVisible() ? this.image : new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V);
     }
 
     public void setImage(final ImageIcon image)
@@ -57,5 +61,15 @@ public class Carte
     public String toString()
     {
         return this.carteEnum.name().concat(" de ".concat(this.couleur.name()));
+    }
+
+    public boolean isVisible()
+    {
+        return this.visible;
+    }
+
+    public void setVisible(final boolean visible)
+    {
+        this.visible = visible;
     }
 }

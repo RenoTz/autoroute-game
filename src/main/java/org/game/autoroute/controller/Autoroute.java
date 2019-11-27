@@ -15,4 +15,9 @@ public class Autoroute
         this.jeuDeCartes = CarteUtils.creerJeuDeCartes();
     }
 
+    public List<Carte> getJeuDeCartes()
+    {
+        return jeuDeCartes;
+    }
+
 }
