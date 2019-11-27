@@ -1,6 +1,5 @@
 package org.game.autoroute.ihm;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
@@ -10,10 +9,19 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+
+import org.game.autoroute.utils.ConstantesUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AutorouteUI extends JFrame
 {
+
+    private static final long serialVersionUID = -7016570646412401206L;
+
+    private static final Logger log = LoggerFactory.getLogger(AutorouteUI.class);
 
     private final JPanel contentPane;
 
@@ -24,13 +32,14 @@ public class AutorouteUI extends JFrame
     {
         EventQueue.invokeLater(new Runnable()
         {
+            @Override
             public void run()
             {
                 try {
                     final AutorouteUI frame = new AutorouteUI();
                     frame.setVisible(true);
                 } catch (final Exception e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                 }
             }
         });
@@ -44,64 +53,66 @@ public class AutorouteUI extends JFrame
         this.setTitle("Autoroute");
         this.setForeground(Color.WHITE);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setBounds(100, 100, 634, 514);
+        this.setBounds(100, 100, 765, 337);
         this.contentPane = new JPanel();
         this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        this.contentPane.setLayout(new BorderLayout(0, 0));
         this.setContentPane(this.contentPane);
+        this.contentPane.setLayout(new GridLayout(2, 1, 0, 0));
 
-        final JPanel panel = new JPanel();
-        this.contentPane.add(panel, BorderLayout.CENTER);
-        panel.setLayout(new GridLayout(1, 9, 2, 2));
+        final JPanel panelCards = new JPanel();
+        this.contentPane.add(panelCards);
+        panelCards.setLayout(new GridLayout(1, 9, 1, 1));
 
-        final JButton btnNewButton = new JButton("New button");
-        panel.add(btnNewButton);
+        final JButton btnLeft1 = new JButton("");
+        btnLeft1.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
+        panelCards.add(btnLeft1);
 
-        final JButton btnNewButton_1 = new JButton("New button");
-        panel.add(btnNewButton_1);
+        final JButton btnLeft2 = new JButton("");
+        btnLeft2.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
+        panelCards.add(btnLeft2);
 
-        final JButton btnNewButton_2 = new JButton("");
-        btnNewButton_2.setIcon(new ImageIcon(
-            "C:\\Users\\r.trezieres\\eclipse-workspace\\autoroute\\src\\main\\resource\\img\\peages.jpg"));
-        btnNewButton_2.setSelectedIcon(new ImageIcon(
-            "C:\\Users\\r.trezieres\\eclipse-workspace\\autoroute\\src\\main\\resource\\img\\peages.jpg"));
-        panel.add(btnNewButton_2);
+        final JButton btnPeage1 = new JButton("");
+        btnPeage1.setIcon(new ImageIcon(ConstantesUtils.PEAGE));
+        panelCards.add(btnPeage1);
 
-        final JButton btnNewButton_3 = new JButton("New button");
-        panel.add(btnNewButton_3);
+        final JButton btnMiddle1 = new JButton("");
+        btnMiddle1.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
+        panelCards.add(btnMiddle1);
 
-        final JButton btnNewButton_4 = new JButton("New button");
-        panel.add(btnNewButton_4);
+        final JButton btnMiddle2 = new JButton("");
+        btnMiddle2.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
+        panelCards.add(btnMiddle2);
 
-        final JButton btnNewButton_5 = new JButton("New button");
-        panel.add(btnNewButton_5);
+        final JButton btnMiddle3 = new JButton("");
+        btnMiddle3.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
+        panelCards.add(btnMiddle3);
 
-        final JButton btnNewButton_6 = new JButton("New button");
-        btnNewButton_6.setBackground(Color.WHITE);
-        btnNewButton_6.setIcon(new ImageIcon(
-            "C:\\Users\\r.trezieres\\eclipse-workspace\\autoroute\\src\\main\\resource\\img\\peages.jpg"));
-        panel.add(btnNewButton_6);
+        final JButton btnPeage2 = new JButton("");
+        btnPeage2.setIcon(new ImageIcon(ConstantesUtils.PEAGE));
+        panelCards.add(btnPeage2);
 
-        final JButton btnNewButton_7 = new JButton("New button");
-        panel.add(btnNewButton_7);
+        final JButton btnRight1 = new JButton("");
+        btnRight1.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
+        panelCards.add(btnRight1);
 
-        final JButton btnNewButton_8 = new JButton("New button");
-        panel.add(btnNewButton_8);
+        final JButton btnRight2 = new JButton("");
+        btnRight2.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
+        panelCards.add(btnRight2);
 
-        final JPanel panel_1 = new JPanel();
-        this.contentPane.add(panel_1, BorderLayout.SOUTH);
-        panel_1.setLayout(new GridLayout(0, 3, 0, 0));
+        final JPanel panelDeck = new JPanel();
+        this.contentPane.add(panelDeck);
+        panelDeck.setLayout(new GridLayout(0, 3, 0, 0));
 
-        final JLabel lblNewLabel = new JLabel("New label");
-        lblNewLabel.setEnabled(false);
-        panel_1.add(lblNewLabel);
+        final JLabel lblNewLabel = new JLabel("");
+        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panelDeck.add(lblNewLabel);
 
-        final JButton btnNewButton_9 = new JButton("New button");
-        panel_1.add(btnNewButton_9);
+        final JButton btnDeck = new JButton("");
+        btnDeck.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_H));
+        panelDeck.add(btnDeck);
 
-        final JLabel lblNewLabel_1 = new JLabel("New label");
-        lblNewLabel_1.setEnabled(false);
-        panel_1.add(lblNewLabel_1);
+        final JLabel lblNewLabel_1 = new JLabel("");
+        panelDeck.add(lblNewLabel_1);
     }
 
 }
