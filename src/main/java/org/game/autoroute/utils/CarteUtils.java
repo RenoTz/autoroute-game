@@ -14,19 +14,26 @@ import com.google.common.collect.Lists;
 
 public class CarteUtils
 {
+    private static ImageIcon iconCursor;
+
+    static {
+        iconCursor = new ImageIcon(ConstantesUtils.CURSOR);
+    }
+
     public static List<Carte> creerJeuDeCartes()
     {
 
         final List<Carte> jeuDeCartes = Lists.newArrayList();
-        // 4 cartes de "UN"
-        /*
-         * final Carte asCarreau = new Carte(CarteEnum.AS, ColorEnum.CARREAU, new
-         * ImageIcon(ConstantesUtils.AS_CARREAU)); final Carte asCoeur = new Carte(CarteEnum.AS, ColorEnum.COEUR, new
-         * ImageIcon(ConstantesUtils.AS_COEUR)); final Carte asPique = new Carte(CarteEnum.AS, ColorEnum.PIQUE, new
-         * ImageIcon(ConstantesUtils.AS_PIQUE)); final Carte asTrefle = new Carte(CarteEnum.AS, ColorEnum.TREFLE, new
-         * ImageIcon(ConstantesUtils.AS_TREFLE)); jeuDeCartes.add(asCarreau); jeuDeCartes.add(asCoeur);
-         * jeuDeCartes.add(asPique); jeuDeCartes.add(asTrefle);
-         */
+        // 4 cartes de "AS"
+        final Carte asCarreau = new Carte(CarteEnum.AS, ColorEnum.CARREAU, new ImageIcon(ConstantesUtils.AS_CARREAU));
+        final Carte asCoeur = new Carte(CarteEnum.AS, ColorEnum.COEUR, new ImageIcon(ConstantesUtils.AS_COEUR));
+        final Carte asPique = new Carte(CarteEnum.AS, ColorEnum.PIQUE, new ImageIcon(ConstantesUtils.AS_PIQUE));
+        final Carte asTrefle = new Carte(CarteEnum.AS, ColorEnum.TREFLE, new ImageIcon(ConstantesUtils.AS_TREFLE));
+        jeuDeCartes.add(asCarreau);
+        jeuDeCartes.add(asCoeur);
+        jeuDeCartes.add(asPique);
+        jeuDeCartes.add(asTrefle);
+
         // 4 cartes de "DEUX"
         final Carte deuxCarreau =
             new Carte(CarteEnum.DEUX, ColorEnum.CARREAU, new ImageIcon(ConstantesUtils.DEUX_CARREAU));
@@ -180,6 +187,11 @@ public class CarteUtils
             return getCarte(cartes);
         }
 
+    }
+
+    public static ImageIcon getIconCursor()
+    {
+        return iconCursor;
     }
 
     public static void melangerJeuDeCartes(final List<Carte> jeuDeCartes)

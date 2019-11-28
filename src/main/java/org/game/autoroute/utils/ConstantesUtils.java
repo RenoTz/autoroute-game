@@ -123,4 +123,6 @@ public class ConstantesUtils
 
     public static final String ARROW_DOWN = PATH_RESOURCES_IMG.concat("arrow_down").concat(PNG);
 
+    public static final String CURSOR = PATH_RESOURCES_IMG.concat("arrow_drop_down").concat(PNG);
+
 }

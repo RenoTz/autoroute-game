@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 
 import org.game.autoroute.model.Carte;
 import org.game.autoroute.utils.CarteUtils;
@@ -21,6 +22,8 @@ public class ActionService implements Serializable
     private static final long serialVersionUID = -7337095939630436762L;
 
     private static final Logger log = LoggerFactory.getLogger(ActionService.class);
+
+    private static final String PATTER_LOG = "{} de {}";
 
     public void accept(final List<Carte> cartes, final JButton button, final List<JButton> buttons)
     {
@@ -37,50 +40,75 @@ public class ActionService implements Serializable
         final Carte carte = CarteUtils.getCarte(cartes);
         carte.setVisible(true);
         button.setIcon(carte.getImage());
-        log.info("{} de {}", carte.getCarteEnum(), carte.getCouleur());
+        log.info(PATTER_LOG, carte.getCarteEnum(), carte.getCouleur());
     }
 
-    public boolean more(final List<Carte> cartes, final List<JButton> buttons, final int currentIndex)
+    public boolean more(final List<Carte> cartes, final List<JButton> buttons, final int currentIndex,
+        final JLabel lblMessage, final List<JLabel> cursors)
     {
         final Carte lastCardVisible =
             Iterables.getLast(cartes.stream().filter(Carte::isVisible).collect(Collectors.toList()));
         final Carte nextCard = CarteUtils.getCarte(cartes);
         nextCard.setVisible(true);
 
-        buttons.get(currentIndex).setIcon(nextCard.getImage());
+        final int nextIndex = currentIndex != buttons.size() - 1 ? currentIndex + 1 : buttons.size() - 1;
+
+        buttons.get(nextIndex).setIcon(nextCard.getImage());
+        log.info(PATTER_LOG, nextCard.getCarteEnum(), nextCard.getCouleur());
 
         if (nextCard.getValeur().intValue() > lastCardVisible.getValeur().intValue()) {
             log.info("TRUE -> IS MORE");
+            buttons.get(nextIndex).setBorder(null);
+            cursors.get(currentIndex).setIcon(null);
+            cursors.get(nextIndex).setIcon(CarteUtils.getIconCursor());
+            lblMessage.setText("GREAT !!! ");
             return true;
         } else if (nextCard.getValeur().intValue() == lastCardVisible.getValeur().intValue()) {
             log.info("WRONG -> YOU DRINK TWICE");
-            buttons.get(currentIndex).setBorder(BorderFactory.createEtchedBorder(Color.RED, Color.DARK_GRAY));
+            buttons.get(nextIndex).setBorder(BorderFactory.createEtchedBorder(Color.RED, Color.DARK_GRAY));
+            lblMessage.setText("YOU DRINK TWICE !!! ");
         } else {
             log.info("WRONG -> YOU DRINK");
-            buttons.get(currentIndex).setBorder(BorderFactory.createEtchedBorder(Color.RED, Color.DARK_GRAY));
+            buttons.get(nextIndex).setBorder(BorderFactory.createEtchedBorder(Color.RED, Color.DARK_GRAY));
+            lblMessage.setText("YOU DRINK !!! ");
         }
         return false;
 
     }
 
-    public boolean less(final List<Carte> cartes, final List<JButton> buttons, final int currentIndex)
+    public boolean less(final List<Carte> cartes, final List<JButton> buttons, final int currentIndex,
+        final JLabel lblMessage, final List<JLabel> cursors)
     {
         final Carte lastCardVisible =
             Iterables.getLast(cartes.stream().filter(Carte::isVisible).collect(Collectors.toList()));
         final Carte nextCard = CarteUtils.getCarte(cartes);
         nextCard.setVisible(true);
 
-        buttons.get(currentIndex).setIcon(nextCard.getImage());
+        final int previousIndex = currentIndex != 0 ? currentIndex - 1 : 0;
+        final int nextIndex = currentIndex != buttons.size() - 1 ? currentIndex + 1 : buttons.size() - 1;
+
+        buttons.get(nextIndex).setIcon(nextCard.getImage());
+        log.info(PATTER_LOG, nextCard.getCarteEnum(), nextCard.getCouleur());
 
         if (nextCard.getValeur().intValue() < lastCardVisible.getValeur().intValue()) {
             log.info("TRUE -> IS LESS");
+            buttons.get(nextIndex).setBorder(null);
+            cursors.get(currentIndex).setIcon(null);
+            cursors.get(nextIndex).setIcon(CarteUtils.getIconCursor());
+            lblMessage.setText("GREAT !!! ");
             return true;
         } else if (nextCard.getValeur().intValue() == lastCardVisible.getValeur().intValue()) {
             log.info("WRONG -> YOU DRINK TWICE");
-            buttons.get(currentIndex).setBorder(BorderFactory.createEtchedBorder(Color.RED, Color.DARK_GRAY));
+            cursors.get(currentIndex).setIcon(null);
+            cursors.get(previousIndex).setIcon(CarteUtils.getIconCursor());
+            buttons.get(nextIndex).setBorder(BorderFactory.createEtchedBorder(Color.RED, Color.DARK_GRAY));
+            lblMessage.setText("YOU DRINK TWICE !!! ");
         } else {
             log.info("WRONG -> YOU DRINK");
-            buttons.get(currentIndex).setBorder(BorderFactory.createEtchedBorder(Color.RED, Color.DARK_GRAY));
+            cursors.get(currentIndex).setIcon(null);
+            cursors.get(previousIndex).setIcon(CarteUtils.getIconCursor());
+            buttons.get(nextIndex).setBorder(BorderFactory.createEtchedBorder(Color.RED, Color.DARK_GRAY));
+            lblMessage.setText("YOU DRINK !!! ");
         }
         return false;
     }
