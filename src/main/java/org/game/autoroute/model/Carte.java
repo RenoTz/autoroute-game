@@ -1,17 +1,29 @@
 package org.game.autoroute.model;
 
+import java.io.Serializable;
+
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 
 import org.game.autoroute.utils.ConstantesUtils;
 
-public class Carte
+public class Carte implements Serializable
 {
+
+    private static final long serialVersionUID = -7368611572002865056L;
 
     private final CarteEnum carteEnum;
 
     private ColorEnum couleur;
 
     private ImageIcon image;
+
+    private final JButton button;
+
+    public JButton getButton()
+    {
+        return this.button;
+    }
 
     private boolean visible;
 
@@ -21,6 +33,8 @@ public class Carte
         this.carteEnum = carteEnum;
         this.couleur = couleur;
         this.setImage(image);
+        this.button = new JButton();
+        this.button.setIcon(image);
     }
 
     public ColorEnum getCouleur()
