@@ -16,7 +16,7 @@ public class CarteUtils
 {
     private static ImageIcon iconCursor;
 
-    public static final List<Carte> jeuDeCartes = Lists.newArrayList();
+    protected static final List<Carte> jeuDeCartes = Lists.newArrayList();
 
     static {
         iconCursor = new ImageIcon(ConstantesUtils.CURSOR);
@@ -172,7 +172,7 @@ public class CarteUtils
         jeuDeCartes.add(roiTrefle);
 
         // on mélange les cartes
-        CarteUtils.melangerJeuDeCartes(jeuDeCartes);
+        melangerJeuDeCartes(jeuDeCartes);
     }
 
     public static Carte getCarte(final List<Carte> cartes)
@@ -196,7 +196,6 @@ public class CarteUtils
 
     public static void melangerJeuDeCartes(final List<Carte> jeuDeCartes)
     {
-
         Collections.shuffle(jeuDeCartes);
         Collections.shuffle(jeuDeCartes);
         Collections.shuffle(jeuDeCartes);
