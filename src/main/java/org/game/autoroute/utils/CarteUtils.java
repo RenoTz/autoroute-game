@@ -16,7 +16,7 @@ public class CarteUtils
 {
     private static ImageIcon iconCursor;
 
-    protected static final List<Carte> jeuDeCartes = Lists.newArrayList();
+    public static final List<Carte> jeuDeCartes = Lists.newArrayList();
 
     static {
         iconCursor = new ImageIcon(ConstantesUtils.CURSOR);
