@@ -21,8 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import org.game.autoroute.controller.Autoroute;
-import org.game.autoroute.model.Carte;
 import org.game.autoroute.service.ActionService;
 import org.game.autoroute.utils.CarteUtils;
 import org.game.autoroute.utils.ConstantesUtils;
@@ -46,8 +44,6 @@ public class AutorouteUI extends JFrame
 
     private final List<JLabel> cursors;
 
-    private final List<Carte> cartes;
-
     private int currentIndex;
 
     private final JLabel lblMessage;
@@ -63,10 +59,9 @@ public class AutorouteUI extends JFrame
     /**
      * Create the frame.
      */
-    public AutorouteUI(final Autoroute autoroute)
+    public AutorouteUI()
     {
         this.actionService = new ActionService();
-        this.cartes = autoroute.getJeuDeCartes();
         this.buttons = Lists.newArrayList();
         this.cursors = Lists.newArrayList();
         this.currentIndex = 0;
@@ -154,7 +149,7 @@ public class AutorouteUI extends JFrame
             @Override
             public void actionPerformed(final ActionEvent e)
             {
-                AutorouteUI.this.actionService.prendreCarte(AutorouteUI.this.cartes, btnLeft1);
+                AutorouteUI.this.actionService.prendreCarte(CarteUtils.jeuDeCartes, btnLeft1);
             }
         };
         btnLeft1.addActionListener(this.takeFirstCard);
@@ -281,7 +276,7 @@ public class AutorouteUI extends JFrame
                     || AutorouteUI.this.currentIndex == 0 && AutorouteUI.this.sens == -1) {
                     AutorouteUI.this.changementDeSens();
                 }
-                final boolean more = AutorouteUI.this.actionService.more(AutorouteUI.this.cartes,
+                final boolean more = AutorouteUI.this.actionService.more(CarteUtils.jeuDeCartes,
                     AutorouteUI.this.buttons, AutorouteUI.this.currentIndex, AutorouteUI.this.lblMessage,
                     AutorouteUI.this.cursors, AutorouteUI.this.sens);
                 if (more) {
@@ -316,7 +311,7 @@ public class AutorouteUI extends JFrame
                     || AutorouteUI.this.currentIndex == 0 && AutorouteUI.this.sens == -1) {
                     AutorouteUI.this.changementDeSens();
                 }
-                final boolean less = AutorouteUI.this.actionService.less(AutorouteUI.this.cartes,
+                final boolean less = AutorouteUI.this.actionService.less(CarteUtils.jeuDeCartes,
                     AutorouteUI.this.buttons, AutorouteUI.this.currentIndex, AutorouteUI.this.lblMessage,
                     AutorouteUI.this.cursors, AutorouteUI.this.sens);
                 if (less) {

@@ -16,14 +16,15 @@ public class CarteUtils
 {
     private static ImageIcon iconCursor;
 
+    public static final List<Carte> jeuDeCartes = Lists.newArrayList();
+
     static {
         iconCursor = new ImageIcon(ConstantesUtils.CURSOR);
+        creerJeuDeCartes();
     }
 
-    public static List<Carte> creerJeuDeCartes()
+    public static void creerJeuDeCartes()
     {
-
-        final List<Carte> jeuDeCartes = Lists.newArrayList();
         // 4 cartes de "AS"
         final Carte asCarreau = new Carte(CarteEnum.AS, ColorEnum.CARREAU, new ImageIcon(ConstantesUtils.AS_CARREAU));
         final Carte asCoeur = new Carte(CarteEnum.AS, ColorEnum.COEUR, new ImageIcon(ConstantesUtils.AS_COEUR));
@@ -172,7 +173,6 @@ public class CarteUtils
 
         // on mélange les cartes
         CarteUtils.melangerJeuDeCartes(jeuDeCartes);
-        return jeuDeCartes;
     }
 
     public static Carte getCarte(final List<Carte> cartes)
