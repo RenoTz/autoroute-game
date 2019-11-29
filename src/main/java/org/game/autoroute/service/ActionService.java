@@ -3,7 +3,6 @@ package org.game.autoroute.service;
 import java.awt.Color;
 import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -14,7 +13,6 @@ import org.game.autoroute.utils.CarteUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 public class ActionService implements Serializable
@@ -36,25 +34,30 @@ public class ActionService implements Serializable
         log.info(PATTER_LOG, carte.getCarteEnum(), carte.getCouleur());
     }
 
-    public boolean more(final List<Carte> cartes, final List<JButton> buttons, final int currentIndex,
-        final JLabel lblMessage, final List<JLabel> cursors)
+    public Carte getCurrentCard(final List<Carte> cartes, final List<JButton> buttons, final int currentIndex)
     {
-        final Carte lastCardVisible =
-            Iterables.getLast(cartes.stream().filter(Carte::isVisible).collect(Collectors.toList()));
+        return cartes.stream().filter(c -> c.getImage().equals(buttons.get(currentIndex).getIcon())).findFirst()
+            .orElse(null);
+    }
+
+    public boolean more(final List<Carte> cartes, final List<JButton> buttons, final int currentIndex,
+        final JLabel lblMessage, final List<JLabel> cursors, final int sens)
+    {
+        final Carte currentCard = this.getCurrentCard(cartes, buttons, currentIndex);
         final Carte nextCard = CarteUtils.getCarte(cartes);
         nextCard.setVisible(true);
 
         final int previousIndex = currentIndex != 0 ? currentIndex - 1 : 0;
-        final int nextIndex = currentIndex != buttons.size() - 1 ? currentIndex + 1 : buttons.size() - 1;
+        final int nextIndex = currentIndex != buttons.size() - 1 ? currentIndex + 1 : 0;
 
         buttons.get(nextIndex).setIcon(nextCard.getImage());
         log.info(PATTER_LOG, nextCard.getCarteEnum(), nextCard.getCouleur());
 
-        if (nextCard.getValeur().intValue() > lastCardVisible.getValeur().intValue()) {
+        if (nextCard.getValeur().intValue() > currentCard.getValeur().intValue()) {
             log.info("TRUE -> IS MORE");
             return this.correct(buttons, currentIndex, lblMessage, cursors, nextIndex);
         } else if (previousIndexPeages.contains(previousIndex)
-            || nextCard.getValeur().intValue() == lastCardVisible.getValeur().intValue()) {
+            || nextCard.getValeur().intValue() == currentCard.getValeur().intValue()) {
             log.info("WRONG -> YOU DRINK TWICE");
             return this.wrong(buttons, currentIndex, lblMessage, "YOU DRINK TWICE", cursors, previousIndex, nextIndex);
         } else {
@@ -64,24 +67,23 @@ public class ActionService implements Serializable
     }
 
     public boolean less(final List<Carte> cartes, final List<JButton> buttons, final int currentIndex,
-        final JLabel lblMessage, final List<JLabel> cursors)
+        final JLabel lblMessage, final List<JLabel> cursors, final int sens)
     {
-        final Carte lastCardVisible =
-            Iterables.getLast(cartes.stream().filter(Carte::isVisible).collect(Collectors.toList()));
+        final Carte currentCard = this.getCurrentCard(cartes, buttons, currentIndex);
         final Carte nextCard = CarteUtils.getCarte(cartes);
         nextCard.setVisible(true);
 
-        final int previousIndex = currentIndex != 0 ? currentIndex - 1 : 0;
-        final int nextIndex = currentIndex != buttons.size() - 1 ? currentIndex + 1 : buttons.size() - 1;
+        final int previousIndex = currentIndex != 0 ? currentIndex - 1 : (sens == -1 ? 1 : 0);
+        final int nextIndex = currentIndex != buttons.size() - 1 ? currentIndex + 1 : 0;
 
         buttons.get(nextIndex).setIcon(nextCard.getImage());
         log.info(PATTER_LOG, nextCard.getCarteEnum(), nextCard.getCouleur());
 
-        if (nextCard.getValeur().intValue() < lastCardVisible.getValeur().intValue()) {
+        if (nextCard.getValeur().intValue() < currentCard.getValeur().intValue()) {
             log.info("TRUE -> IS LESS");
             return this.correct(buttons, currentIndex, lblMessage, cursors, nextIndex);
         } else if (previousIndexPeages.contains(previousIndex)
-            || nextCard.getValeur().intValue() == lastCardVisible.getValeur().intValue()) {
+            || nextCard.getValeur().intValue() == currentCard.getValeur().intValue()) {
             log.info("WRONG -> YOU DRINK TWICE");
             this.wrong(buttons, currentIndex, lblMessage, "YOU DRINK TWICE", cursors, previousIndex, nextIndex);
         } else {

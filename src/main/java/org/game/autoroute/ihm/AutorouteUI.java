@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -276,9 +277,13 @@ public class AutorouteUI extends JFrame
             @Override
             public void actionPerformed(final ActionEvent e)
             {
-                final boolean more =
-                    AutorouteUI.this.actionService.more(AutorouteUI.this.cartes, AutorouteUI.this.buttons,
-                        AutorouteUI.this.currentIndex, AutorouteUI.this.lblMessage, AutorouteUI.this.cursors);
+                if (AutorouteUI.this.currentIndex == 6 && AutorouteUI.this.sens == 1
+                    || AutorouteUI.this.currentIndex == 0 && AutorouteUI.this.sens == -1) {
+                    AutorouteUI.this.changementDeSens();
+                }
+                final boolean more = AutorouteUI.this.actionService.more(AutorouteUI.this.cartes,
+                    AutorouteUI.this.buttons, AutorouteUI.this.currentIndex, AutorouteUI.this.lblMessage,
+                    AutorouteUI.this.cursors, AutorouteUI.this.sens);
                 if (more) {
                     AutorouteUI.this.currentIndex++;
                     AutorouteUI.this.nbGorgees =
@@ -292,14 +297,9 @@ public class AutorouteUI extends JFrame
                         AutorouteUI.this.currentIndex == 1 || AutorouteUI.this.currentIndex == 4
                             ? AutorouteUI.this.nbGorgees + 2 : AutorouteUI.this.nbGorgees + 1;
                 }
-                if (AutorouteUI.this.currentIndex == 6 && AutorouteUI.this.sens == 1
-                    || AutorouteUI.this.currentIndex == 0 && AutorouteUI.this.sens == -1) {
-                    AutorouteUI.this.sens = AutorouteUI.this.sens == 1 ? -1 : 1;
-                    AutorouteUI.this.currentIndex = AutorouteUI.this.sens == 1 ? 6 : 0;
-                    AutorouteUI.this.changementDeSens();
-                }
                 AutorouteUI.this.updateLabelNbGorgees();
                 log.info("currentIndex : {}", AutorouteUI.this.currentIndex);
+                AutorouteUI.this.checkIfWon();
             }
 
         };
@@ -312,9 +312,13 @@ public class AutorouteUI extends JFrame
             @Override
             public void actionPerformed(final ActionEvent e)
             {
-                final boolean less =
-                    AutorouteUI.this.actionService.less(AutorouteUI.this.cartes, AutorouteUI.this.buttons,
-                        AutorouteUI.this.currentIndex, AutorouteUI.this.lblMessage, AutorouteUI.this.cursors);
+                if (AutorouteUI.this.currentIndex == 6 && AutorouteUI.this.sens == 1
+                    || AutorouteUI.this.currentIndex == 0 && AutorouteUI.this.sens == -1) {
+                    AutorouteUI.this.changementDeSens();
+                }
+                final boolean less = AutorouteUI.this.actionService.less(AutorouteUI.this.cartes,
+                    AutorouteUI.this.buttons, AutorouteUI.this.currentIndex, AutorouteUI.this.lblMessage,
+                    AutorouteUI.this.cursors, AutorouteUI.this.sens);
                 if (less) {
                     AutorouteUI.this.currentIndex++;
                     AutorouteUI.this.nbGorgees =
@@ -327,27 +331,34 @@ public class AutorouteUI extends JFrame
                         AutorouteUI.this.currentIndex == 1 || AutorouteUI.this.currentIndex == 4
                             ? AutorouteUI.this.nbGorgees + 2 : AutorouteUI.this.nbGorgees + 1;
                 }
-                if (AutorouteUI.this.currentIndex == 6 && AutorouteUI.this.sens == 1
-                    || AutorouteUI.this.currentIndex == 0 && AutorouteUI.this.sens == -1) {
-                    AutorouteUI.this.sens = AutorouteUI.this.sens == 1 ? -1 : 1;
-                    AutorouteUI.this.currentIndex = AutorouteUI.this.sens == 1 ? 6 : 0;
-                    AutorouteUI.this.changementDeSens();
-                }
+
                 AutorouteUI.this.updateLabelNbGorgees();
                 log.info("currentIndex : {}", AutorouteUI.this.currentIndex);
+                AutorouteUI.this.checkIfWon();
             }
         };
     }
 
     private void changementDeSens()
     {
+        AutorouteUI.this.sens = AutorouteUI.this.sens == 1 ? -1 : 1;
+        AutorouteUI.this.currentIndex = 0;
         Collections.reverse(AutorouteUI.this.cursors);
         Collections.reverse(AutorouteUI.this.buttons);
+        log.info("changement de sens : {}", this.sens == 1 ? "ALLER" : "RETOUR");
     }
 
     private void updateLabelNbGorgees()
     {
         AutorouteUI.this.lblNbGorgees.setText("GORGEES : " + AutorouteUI.this.nbGorgees);
+    }
+
+    private void checkIfWon()
+    {
+
+        if (this.currentIndex == 6 && this.sens == -1) {
+            JOptionPane.showMessageDialog(this, "YOU WON !!!");
+        }
     }
 
 }
