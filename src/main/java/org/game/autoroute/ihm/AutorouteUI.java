@@ -2,9 +2,14 @@ package org.game.autoroute.ihm;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -46,7 +51,13 @@ public class AutorouteUI extends JFrame
 
     private final JLabel lblMessage;
 
+    private final JLabel lblNbGorgees;
+
+    private int nbGorgees;
+
     private final ActionListener takeFirstCard;
+
+    private int sens = 1;
 
     /**
      * Create the frame.
@@ -62,13 +73,21 @@ public class AutorouteUI extends JFrame
         this.setTitle("Autoroute");
         this.setForeground(Color.WHITE);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setBounds(100, 100, 800, 569);
+        this.setBounds(100, 100, 800, 680);
         this.contentPane = new JPanel();
         this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         this.setContentPane(this.contentPane);
-        this.contentPane.setLayout(new GridLayout(4, 1, 0, 0));
+        this.contentPane.setLayout(new GridLayout(5, 1, 0, 0));
 
         final JPanel panelCursor = new JPanel();
+        panelCursor.addComponentListener(new ComponentAdapter()
+        {
+            @Override
+            public void componentResized(final ComponentEvent e)
+            {
+                panelCursor.setPreferredSize(new Dimension(800, 10));
+            }
+        });
         this.contentPane.add(panelCursor);
         panelCursor.setLayout(new GridLayout(0, 9, 0, 0));
 
@@ -117,6 +136,7 @@ public class AutorouteUI extends JFrame
         this.cursors.add(lblSelectRight2);
 
         final JPanel panelCards = new JPanel();
+        panelCards.setPreferredSize(new Dimension(800, 80));
         this.contentPane.add(panelCards);
         panelCards.setLayout(new GridLayout(1, 9, 1, 1));
 
@@ -133,7 +153,7 @@ public class AutorouteUI extends JFrame
             @Override
             public void actionPerformed(final ActionEvent e)
             {
-                AutorouteUI.this.actionService.accept(AutorouteUI.this.cartes, btnLeft1, AutorouteUI.this.buttons);
+                AutorouteUI.this.actionService.prendreCarte(AutorouteUI.this.cartes, btnLeft1);
             }
         };
         btnLeft1.addActionListener(this.takeFirstCard);
@@ -176,11 +196,10 @@ public class AutorouteUI extends JFrame
 
         final JPanel panel5 = new JPanel();
         panelCards.add(panel5);
-        panel5.setLayout(new CardLayout(5, 5));
+        panel5.setLayout(new CardLayout(0, 0));
 
         final JButton btnMiddle3 = new JButton();
         panel5.add(btnMiddle3, "name_178478241699700");
-        panel5.add(btnMiddle3, "name_178478241699701");
         btnMiddle3.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
         this.buttons.add(btnMiddle3);
 
@@ -211,6 +230,7 @@ public class AutorouteUI extends JFrame
         this.buttons.add(btnRight2);
 
         final JPanel panelDeck = new JPanel();
+        panelDeck.setPreferredSize(new Dimension(800, 60));
         this.contentPane.add(panelDeck);
         panelDeck.setLayout(new GridLayout(0, 3, 0, 0));
 
@@ -229,13 +249,21 @@ public class AutorouteUI extends JFrame
         panelDeck.add(btnUp);
 
         final JPanel panelMessage = new JPanel();
+        panelMessage.setPreferredSize(new Dimension(800, 40));
         this.contentPane.add(panelMessage);
 
         this.lblMessage = new JLabel();
-        this.lblMessage.setHorizontalAlignment(SwingConstants.CENTER);
-        this.lblMessage.setVerticalAlignment(SwingConstants.BOTTOM);
-        this.lblMessage.setFont(this.lblMessage.getFont().deriveFont(64f));
+        this.lblMessage.setHorizontalAlignment(SwingConstants.TRAILING);
+        this.lblMessage.setFont(new Font("Segoe Script", Font.PLAIN, 50));
         panelMessage.add(this.lblMessage);
+
+        final JPanel panelGorgees = new JPanel();
+        panelGorgees.setPreferredSize(new Dimension(800, 20));
+        this.contentPane.add(panelGorgees);
+
+        this.lblNbGorgees = new JLabel("GORGEES : 0");
+        panelGorgees.add(this.lblNbGorgees);
+        this.lblNbGorgees.setHorizontalAlignment(SwingConstants.CENTER);
 
         btnLeft1.doClick();
         btnLeft1.removeActionListener(this.takeFirstCard);
@@ -253,12 +281,27 @@ public class AutorouteUI extends JFrame
                         AutorouteUI.this.currentIndex, AutorouteUI.this.lblMessage, AutorouteUI.this.cursors);
                 if (more) {
                     AutorouteUI.this.currentIndex++;
+                    AutorouteUI.this.nbGorgees =
+                        AutorouteUI.this.currentIndex == 2 || AutorouteUI.this.currentIndex == 5
+                            ? AutorouteUI.this.nbGorgees + 1 : AutorouteUI.this.nbGorgees;
+
                 } else {
                     AutorouteUI.this.currentIndex =
                         AutorouteUI.this.currentIndex != 0 ? AutorouteUI.this.currentIndex - 1 : 0;
+                    AutorouteUI.this.nbGorgees =
+                        AutorouteUI.this.currentIndex == 1 || AutorouteUI.this.currentIndex == 4
+                            ? AutorouteUI.this.nbGorgees + 2 : AutorouteUI.this.nbGorgees + 1;
                 }
+                if (AutorouteUI.this.currentIndex == 6 && AutorouteUI.this.sens == 1
+                    || AutorouteUI.this.currentIndex == 0 && AutorouteUI.this.sens == -1) {
+                    AutorouteUI.this.sens = AutorouteUI.this.sens == 1 ? -1 : 1;
+                    AutorouteUI.this.currentIndex = AutorouteUI.this.sens == 1 ? 6 : 0;
+                    AutorouteUI.this.changementDeSens();
+                }
+                AutorouteUI.this.updateLabelNbGorgees();
                 log.info("currentIndex : {}", AutorouteUI.this.currentIndex);
             }
+
         };
     }
 
@@ -274,13 +317,37 @@ public class AutorouteUI extends JFrame
                         AutorouteUI.this.currentIndex, AutorouteUI.this.lblMessage, AutorouteUI.this.cursors);
                 if (less) {
                     AutorouteUI.this.currentIndex++;
+                    AutorouteUI.this.nbGorgees =
+                        AutorouteUI.this.currentIndex == 2 || AutorouteUI.this.currentIndex == 5
+                            ? AutorouteUI.this.nbGorgees + 1 : AutorouteUI.this.nbGorgees;
                 } else {
                     AutorouteUI.this.currentIndex =
                         AutorouteUI.this.currentIndex != 0 ? AutorouteUI.this.currentIndex - 1 : 0;
+                    AutorouteUI.this.nbGorgees =
+                        AutorouteUI.this.currentIndex == 1 || AutorouteUI.this.currentIndex == 4
+                            ? AutorouteUI.this.nbGorgees + 2 : AutorouteUI.this.nbGorgees + 1;
                 }
+                if (AutorouteUI.this.currentIndex == 6 && AutorouteUI.this.sens == 1
+                    || AutorouteUI.this.currentIndex == 0 && AutorouteUI.this.sens == -1) {
+                    AutorouteUI.this.sens = AutorouteUI.this.sens == 1 ? -1 : 1;
+                    AutorouteUI.this.currentIndex = AutorouteUI.this.sens == 1 ? 6 : 0;
+                    AutorouteUI.this.changementDeSens();
+                }
+                AutorouteUI.this.updateLabelNbGorgees();
                 log.info("currentIndex : {}", AutorouteUI.this.currentIndex);
             }
         };
+    }
+
+    private void changementDeSens()
+    {
+        Collections.reverse(AutorouteUI.this.cursors);
+        Collections.reverse(AutorouteUI.this.buttons);
+    }
+
+    private void updateLabelNbGorgees()
+    {
+        AutorouteUI.this.lblNbGorgees.setText("GORGEES : " + AutorouteUI.this.nbGorgees);
     }
 
 }
