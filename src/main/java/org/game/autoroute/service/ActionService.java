@@ -1,19 +1,20 @@
 package org.game.autoroute.service;
 
+import com.google.common.collect.Lists;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.io.Serializable;
 import java.util.List;
-
+import java.util.Objects;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-
+import javax.swing.JPanel;
 import org.game.autoroute.model.Carte;
 import org.game.autoroute.utils.CarteUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 public class ActionService implements Serializable
 {
@@ -26,21 +27,28 @@ public class ActionService implements Serializable
 
     private static final List<Integer> previousIndexPeages = Lists.newArrayList(1, 4);
 
-    public void prendreCarte(final List<Carte> cartes, final JButton button)
+    public ImageIcon getImageCard(final List<Carte> cartes)
     {
         final Carte carte = CarteUtils.getCarte(cartes);
         carte.setVisible(true);
-        button.setIcon(carte.getImage());
         log.info(PATTER_LOG, carte.getCarteEnum(), carte.getCouleur());
+        return carte.getImage();
     }
 
-    public Carte getCurrentCard(final List<Carte> cartes, final List<JButton> buttons, final int currentIndex)
+    private Carte getCurrentCard(final List<Carte> cartes, final List<JButton> buttons, final int currentIndex)
     {
-        return cartes.stream().filter(c -> c.getImage().equals(buttons.get(currentIndex).getIcon())).findFirst()
+        final Carte carte =  cartes.stream().filter(c -> c.getImage().equals(buttons.get(currentIndex).getIcon())).findFirst()
             .orElse(null);
+        if(Objects.isNull(carte)){
+            log.error("Plus de cartes. On reprends un nouveau jeu de cartes.");
+            cartes.forEach(c -> c.setVisible(false));
+        }
+        return carte;
     }
 
-    public boolean more(final List<Carte> cartes, final List<JButton> buttons, final int currentIndex,
+    public boolean more(final List<Carte> cartes, final List<JButton> buttons,
+        final List<CardLayout> cardLayouts, final List<JPanel> cardPanels,
+        final int currentIndex,
         final JLabel lblMessage, final List<JLabel> cursors, final int sens)
     {
         final Carte currentCard = this.getCurrentCard(cartes, buttons, currentIndex);
@@ -50,10 +58,12 @@ public class ActionService implements Serializable
         final int previousIndex = currentIndex != 0 ? currentIndex - 1 : 0;
         final int nextIndex = currentIndex != buttons.size() - 1 ? currentIndex + 1 : 0;
 
-        buttons.get(nextIndex).setIcon(nextCard.getImage());
+//        buttons.get(nextIndex).setIcon(nextCard.getImage());
+        cardPanels.get(nextIndex).add(nextCard.addCard(cardLayouts.get(nextIndex), cardPanels.get(nextIndex)));
+
         log.info(PATTER_LOG, nextCard.getCarteEnum(), nextCard.getCouleur());
 
-        if (nextCard.getValeur().intValue() > currentCard.getValeur().intValue()) {
+        if (nextCard.getValeur() > currentCard.getValeur()) {
             log.info("TRUE -> IS MORE");
             return this.correct(buttons, currentIndex, lblMessage, cursors, nextIndex);
         } else if (previousIndexPeages.contains(previousIndex)
@@ -79,7 +89,7 @@ public class ActionService implements Serializable
         buttons.get(nextIndex).setIcon(nextCard.getImage());
         log.info(PATTER_LOG, nextCard.getCarteEnum(), nextCard.getCouleur());
 
-        if (nextCard.getValeur().intValue() < currentCard.getValeur().intValue()) {
+        if (nextCard.getValeur() < currentCard.getValeur()) {
             log.info("TRUE -> IS LESS");
             return this.correct(buttons, currentIndex, lblMessage, cursors, nextIndex);
         } else if (previousIndexPeages.contains(previousIndex)
