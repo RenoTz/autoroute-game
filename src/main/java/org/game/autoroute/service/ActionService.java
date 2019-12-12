@@ -58,7 +58,7 @@ public class ActionService implements Serializable
         final int previousIndex = currentIndex != 0 ? currentIndex - 1 : 0;
         final int nextIndex = currentIndex != buttons.size() - 1 ? currentIndex + 1 : 0;
 
-//        buttons.get(nextIndex).setIcon(nextCard.getImage());
+        buttons.get(nextIndex).setIcon(nextCard.getImage());
         final JButton nextCardButton = nextCard.addCard(cardLayouts.get(nextIndex), cardPanels.get(nextIndex));
         cardPanels.get(nextIndex).add(nextCardButton);
         nextCardButton.doClick();
@@ -78,7 +78,9 @@ public class ActionService implements Serializable
         }
     }
 
-    public boolean less(final List<Carte> cartes, final List<JButton> buttons, final int currentIndex,
+    public boolean less(final List<Carte> cartes, final List<JButton> buttons,
+        final List<CardLayout> cardLayouts, final List<JPanel> cardPanels,
+        final int currentIndex,
         final JLabel lblMessage, final List<JLabel> cursors, final int sens)
     {
         final Carte currentCard = this.getCurrentCard(cartes, buttons, currentIndex);
@@ -89,6 +91,9 @@ public class ActionService implements Serializable
         final int nextIndex = currentIndex != buttons.size() - 1 ? currentIndex + 1 : 0;
 
         buttons.get(nextIndex).setIcon(nextCard.getImage());
+        final JButton nextCardButton = nextCard.addCard(cardLayouts.get(nextIndex), cardPanels.get(nextIndex));
+        cardPanels.get(nextIndex).add(nextCardButton);
+        nextCardButton.doClick();
         log.info(PATTER_LOG, nextCard.getCarteEnum(), nextCard.getCouleur());
 
         if (nextCard.getValeur() < currentCard.getValeur()) {

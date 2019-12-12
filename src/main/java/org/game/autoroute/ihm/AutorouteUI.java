@@ -304,12 +304,12 @@ public class AutorouteUI extends JFrame {
 					AutorouteUI.this.changementDeSens();
 				}
 				final boolean more = AutorouteUI.this.actionService.more(CarteUtils.jeuDeCartes,
-						AutorouteUI.this.buttons, AutorouteUI.this.cardLayouts, AutorouteUI.this.cardPanels, AutorouteUI.this.currentIndex, AutorouteUI.this.lblMessage,
-						AutorouteUI.this.cursors, AutorouteUI.this.sens);
+						AutorouteUI.this.buttons, AutorouteUI.this.cardLayouts, AutorouteUI.this.cardPanels,
+						AutorouteUI.this.currentIndex, AutorouteUI.this.lblMessage, AutorouteUI.this.cursors,
+						AutorouteUI.this.sens);
 				if (more) {
 					AutorouteUI.this.currentIndex++;
 					calculNbGorgeesSuccess();
-
 				} else {
 					AutorouteUI.this.currentIndex = AutorouteUI.this.currentIndex != 0
 							? AutorouteUI.this.currentIndex - 1
@@ -334,8 +334,9 @@ public class AutorouteUI extends JFrame {
 					AutorouteUI.this.changementDeSens();
 				}
 				final boolean less = AutorouteUI.this.actionService.less(CarteUtils.jeuDeCartes,
-						AutorouteUI.this.buttons, AutorouteUI.this.currentIndex, AutorouteUI.this.lblMessage,
-						AutorouteUI.this.cursors, AutorouteUI.this.sens);
+						AutorouteUI.this.buttons, AutorouteUI.this.cardLayouts, AutorouteUI.this.cardPanels,
+						AutorouteUI.this.currentIndex, AutorouteUI.this.lblMessage,	AutorouteUI.this.cursors,
+						AutorouteUI.this.sens);
 				if (less) {
 					AutorouteUI.this.currentIndex++;
 					calculNbGorgeesSuccess();
