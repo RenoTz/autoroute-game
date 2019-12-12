@@ -59,7 +59,9 @@ public class ActionService implements Serializable
         final int nextIndex = currentIndex != buttons.size() - 1 ? currentIndex + 1 : 0;
 
 //        buttons.get(nextIndex).setIcon(nextCard.getImage());
-        cardPanels.get(nextIndex).add(nextCard.addCard(cardLayouts.get(nextIndex), cardPanels.get(nextIndex)));
+        final JButton nextCardButton = nextCard.addCard(cardLayouts.get(nextIndex), cardPanels.get(nextIndex));
+        cardPanels.get(nextIndex).add(nextCardButton);
+        nextCardButton.doClick();
 
         log.info(PATTER_LOG, nextCard.getCarteEnum(), nextCard.getCouleur());
 

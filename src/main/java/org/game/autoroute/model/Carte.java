@@ -86,7 +86,7 @@ public class Carte implements Serializable
             }
         });
         panel.add(getImage().toString(), button);
-        button.doClick();
+
         return button;
     }
 }
