@@ -35,8 +35,6 @@ public class AutorouteUI extends JFrame
 
     private ActionService actionService;
 
-    private List<JButton> buttons;
-
     private List<CardLayout> cardLayouts;
 
     private List<JPanel> cardPanels;
@@ -68,7 +66,17 @@ public class AutorouteUI extends JFrame
     {
         this.init();
         this.setup();
+    }
 
+    private void init()
+    {
+        this.actionService = new ActionService();
+        this.cardLayouts = Lists.newArrayList();
+        this.cardPanels = Lists.newArrayList();
+        this.cursors = Lists.newArrayList();
+        this.currentIndex = 0;
+
+        this.initialiserLesJoueurs();
     }
 
     private void setup()
@@ -148,7 +156,6 @@ public class AutorouteUI extends JFrame
         panelLeft1.add(imageIconCard.toString(), btnLeft1);
         btnLeft1.setIcon(imageIconCard);
         btnLeft1.addActionListener(this.nextCard(cardLayoutLeft1, panelLeft1));
-        this.buttons.add(btnLeft1);
         this.cardPanels.add(panelLeft1);
 
         // CARD LEFT 2
@@ -162,7 +169,6 @@ public class AutorouteUI extends JFrame
         panelLeft2.add(ConstantesUtils.BACK_CARD_BLUE_V, btnLeft2);
         btnLeft2.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
         btnLeft2.addActionListener(this.nextCard(cardLayoutLeft2, panelLeft2));
-        this.buttons.add(btnLeft2);
         this.cardPanels.add(panelLeft2);
 
         // PEAGE 1
@@ -185,7 +191,6 @@ public class AutorouteUI extends JFrame
         panelMiddle1.add(ConstantesUtils.BACK_CARD_BLUE_V, btnMiddle1);
         btnMiddle1.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
         btnMiddle1.addActionListener(this.nextCard(cardLayoutMiddle1, panelMiddle1));
-        this.buttons.add(btnMiddle1);
         this.cardPanels.add(panelMiddle1);
 
         // CARD MIDDLE 2
@@ -199,7 +204,6 @@ public class AutorouteUI extends JFrame
         panelMiddle2.add(ConstantesUtils.BACK_CARD_BLUE_V, btnMiddle2);
         btnMiddle2.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
         btnMiddle2.addActionListener(this.nextCard(cardLayoutMiddle2, panelMiddle2));
-        this.buttons.add(btnMiddle2);
         this.cardPanels.add(panelMiddle2);
 
         // CARD MIDDLE 3
@@ -213,7 +217,6 @@ public class AutorouteUI extends JFrame
         panelMiddle3.add(ConstantesUtils.BACK_CARD_BLUE_V, btnMiddle3);
         btnMiddle3.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
         btnMiddle3.addActionListener(this.nextCard(cardLayoutMiddle3, panelMiddle3));
-        this.buttons.add(btnMiddle3);
         this.cardPanels.add(panelMiddle3);
 
         // PEAGE 2
@@ -236,7 +239,6 @@ public class AutorouteUI extends JFrame
         panelRight1.add(ConstantesUtils.BACK_CARD_BLUE_V, btnRight1);
         btnRight1.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
         btnRight1.addActionListener(this.nextCard(cardLayoutRight1, panelRight1));
-        this.buttons.add(btnRight1);
         this.cardPanels.add(panelRight1);
 
         // CARD RIGHT 2
@@ -250,7 +252,6 @@ public class AutorouteUI extends JFrame
         panelRight2.add(btnRight2);
         btnRight2.setIcon(new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V));
         btnRight2.addActionListener(this.nextCard(cardLayoutRight2, panelRight2));
-        this.buttons.add(btnRight2);
         this.cardPanels.add(panelRight2);
 
         final JPanel panelAction = new JPanel();
@@ -300,23 +301,11 @@ public class AutorouteUI extends JFrame
         panelGorgees.add(lblJoueur2);
     }
 
-    private void init()
-    {
-        this.actionService = new ActionService();
-        this.buttons = Lists.newArrayList();
-        this.cardLayouts = Lists.newArrayList();
-        this.cardPanels = Lists.newArrayList();
-        this.cursors = Lists.newArrayList();
-        this.currentIndex = 0;
-
-        this.initialiserLesJoueurs();
-    }
-
     private ActionListener more()
     {
         return e -> {
             SoundUtils.playTakeCard();
-            this.checkChanchementDeSens();
+            this.checkChangementDeSens();
             final boolean more = AutorouteUI.this.actionService
                 .more(AutorouteUI.this.cardLayouts, AutorouteUI.this.cardPanels, AutorouteUI.this.currentIndex,
                     AutorouteUI.this.cursors, AutorouteUI.this.sens);
@@ -328,20 +317,12 @@ public class AutorouteUI extends JFrame
     {
         return e -> {
             SoundUtils.playTakeCard();
-            this.checkChanchementDeSens();
+            this.checkChangementDeSens();
             final boolean less = AutorouteUI.this.actionService
                 .less(AutorouteUI.this.cardLayouts, AutorouteUI.this.cardPanels, AutorouteUI.this.currentIndex,
                     AutorouteUI.this.cursors, AutorouteUI.this.sens);
             this.postCalculsAndUpdate(less);
         };
-    }
-
-    private void checkChanchementDeSens()
-    {
-        if (AutorouteUI.this.currentIndex == 6 && AutorouteUI.this.sens == 1
-            || AutorouteUI.this.currentIndex == 0 && AutorouteUI.this.sens == -1) {
-            AutorouteUI.this.changementDeSens();
-        }
     }
 
     private void postCalculsAndUpdate(final boolean success)
@@ -365,18 +346,25 @@ public class AutorouteUI extends JFrame
         // Affichage nombre de gorgées à boire + maj nbGorgeesTotal
         this.lblMessage.setText(String.format(LABEL_MSG_GORGEE, nbGorgeesSuppl));
         this.nbGorgeesTotal += nbGorgeesSuppl;
+
+        // on incrémente le nombre de série
+        this.serie++;
     }
 
     private void calculNbGorgeesFailed()
     {
         // check si l'échec est dû à l'encontre d'un double : +2 gorgées le cas échéant sinon +1
         final int previousIndex =
-            this.currentIndex != this.buttons.size() - 1 ? this.currentIndex + 1 : this.buttons.size() - 2;
+            this.currentIndex != this.cardLayouts.size() - 1 ? this.currentIndex + 1 : this.cardLayouts.size() - 2;
         final int beforePreviousIndex =
-            previousIndex != this.buttons.size() - 1 ? previousIndex + 1 : this.buttons.size() - 2;
+            previousIndex != this.cardLayouts.size() - 1 ? previousIndex + 1 : this.cardLayouts.size() - 2;
 
-        int nbGorgeesSuppl = this.buttons.get(previousIndex).getIcon().toString()
-            .equals(this.buttons.get(beforePreviousIndex).getIcon().toString()) ? 2 : 1;
+        final JButton previousButton = (JButton) this.cardPanels.get(previousIndex)
+            .getComponent(this.cardPanels.get(previousIndex).getComponentCount() - 1);
+        final JButton beforePreviousButton = (JButton) this.cardPanels.get(beforePreviousIndex)
+            .getComponent(this.cardPanels.get(beforePreviousIndex).getComponentCount() - 1);
+        int nbGorgeesSuppl =
+            previousButton.getIcon().toString().equals(beforePreviousButton.getIcon().toString()) ? 2 : 1;
 
         // check si le joueur passe un péage : +1 gorgée le cas échéant
         nbGorgeesSuppl += this.currentIndex == 1 || this.currentIndex == 4 ? 1 : 0;
@@ -384,6 +372,9 @@ public class AutorouteUI extends JFrame
         // Affichage nombre de gorgées à boire + maj nbGorgeesTotal
         this.lblMessage.setText(String.format(LABEL_MSG_GORGEE, nbGorgeesSuppl));
         this.nbGorgeesTotal += nbGorgeesSuppl;
+        // on remet à zéro le nombre de série
+        this.serie = 0;
+
     }
 
     private ActionListener nextCard(final CardLayout cardLayout, final JPanel panel)
@@ -398,20 +389,27 @@ public class AutorouteUI extends JFrame
         log.info("currentIndex : {}", AutorouteUI.this.currentIndex);
     }
 
+    private void checkChangementDeSens()
+    {
+        if (AutorouteUI.this.currentIndex == 6 && AutorouteUI.this.sens == 1
+            || AutorouteUI.this.currentIndex == 0 && AutorouteUI.this.sens == -1) {
+            AutorouteUI.this.changementDeSens();
+        }
+    }
+
     private void changementDeSens()
     {
-        AutorouteUI.this.sens = AutorouteUI.this.sens == 1 ? -1 : 1;
-        AutorouteUI.this.currentIndex = AutorouteUI.this.sens == 1 ? 6 : 0;
-        Collections.reverse(AutorouteUI.this.cursors);
-        Collections.reverse(AutorouteUI.this.buttons);
-        Collections.reverse(AutorouteUI.this.cardLayouts);
-        Collections.reverse(AutorouteUI.this.cardPanels);
+        this.sens = this.sens == 1 ? -1 : 1;
+        this.currentIndex = this.sens == 1 ? 6 : 0;
+        Collections.reverse(this.cursors);
+        Collections.reverse(this.cardLayouts);
+        Collections.reverse(this.cardPanels);
         log.info("changement de sens : {}", this.sens == 1 ? "ALLER" : "RETOUR");
     }
 
     private void updateLabelNbGorgees()
     {
-        AutorouteUI.this.lblNbGorgees.setText("GORGEES : " + AutorouteUI.this.nbGorgeesTotal);
+        this.lblNbGorgees.setText("GORGEES : " + this.nbGorgeesTotal);
     }
 
     private void checkIfWon()
