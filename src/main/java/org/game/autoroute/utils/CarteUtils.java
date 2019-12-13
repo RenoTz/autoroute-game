@@ -1,29 +1,26 @@
 package org.game.autoroute.utils;
 
+import com.google.common.collect.Lists;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import javax.swing.ImageIcon;
-
 import org.game.autoroute.model.Carte;
 import org.game.autoroute.model.CarteEnum;
 import org.game.autoroute.model.ColorEnum;
 
-import com.google.common.collect.Lists;
-
 public class CarteUtils
 {
-    private static ImageIcon iconCursor;
-
     public static final List<Carte> jeuDeCartes = Lists.newArrayList();
+
+    private static final ImageIcon iconCursor;
 
     static {
         iconCursor = new ImageIcon(ConstantesUtils.CURSOR);
         creerJeuDeCartes();
     }
 
-    public static void creerJeuDeCartes()
+    private static void creerJeuDeCartes()
     {
         // 4 cartes de "AS"
         final Carte asCarreau = new Carte(CarteEnum.AS, ColorEnum.CARREAU, new ImageIcon(ConstantesUtils.AS_CARREAU));
@@ -172,21 +169,21 @@ public class CarteUtils
         jeuDeCartes.add(roiTrefle);
 
         // on mélange les cartes
-        melangerJeuDeCartes(jeuDeCartes);
+        melangerJeuDeCartes();
     }
 
-    public static Carte getCarte(final List<Carte> cartes)
+    public static Carte getNextCard()
     {
-
-        final Optional<Carte> carteOpt = cartes.stream().filter(c -> !c.isVisible()).findFirst();
+        final Optional<Carte> carteOpt = CarteUtils.jeuDeCartes.stream().filter(c -> !c.isVisible()).findFirst();
 
         if (carteOpt.isPresent()) {
-            return carteOpt.get();
+            final Carte carte = carteOpt.get();
+            carte.setVisible(true);
+            return carte;
         } else {
-            cartes.forEach(c -> c.setVisible(false));
-            return getCarte(cartes);
+            CarteUtils.jeuDeCartes.forEach(c -> c.setVisible(false));
+            return getNextCard();
         }
-
     }
 
     public static ImageIcon getIconCursor()
@@ -194,7 +191,7 @@ public class CarteUtils
         return iconCursor;
     }
 
-    public static void melangerJeuDeCartes(final List<Carte> jeuDeCartes)
+    private static void melangerJeuDeCartes()
     {
         Collections.shuffle(jeuDeCartes);
         Collections.shuffle(jeuDeCartes);

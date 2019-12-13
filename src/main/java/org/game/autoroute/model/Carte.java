@@ -1,8 +1,6 @@
 package org.game.autoroute.model;
 
 import java.awt.CardLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -16,9 +14,9 @@ public class Carte implements Serializable
 
     private final CarteEnum carteEnum;
 
-    private ColorEnum couleur;
+    private final ColorEnum couleur;
 
-    private ImageIcon image;
+    private final ImageIcon image;
 
     private boolean visible;
 
@@ -26,17 +24,12 @@ public class Carte implements Serializable
     {
         this.carteEnum = carteEnum;
         this.couleur = couleur;
-        this.setImage(image);
+        this.image = image;
     }
 
     public ColorEnum getCouleur()
     {
         return this.couleur;
-    }
-
-    public void setCouleur(final ColorEnum couleur)
-    {
-        this.couleur = couleur;
     }
 
     public CarteEnum getCarteEnum()
@@ -52,11 +45,6 @@ public class Carte implements Serializable
     public ImageIcon getImage()
     {
         return this.isVisible() ? this.image : new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V);
-    }
-
-    public void setImage(final ImageIcon image)
-    {
-        this.image = image;
     }
 
     @Override
@@ -79,12 +67,7 @@ public class Carte implements Serializable
 
         final JButton button = new JButton();
         button.setIcon(getImage());
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                cardLayout.next(panel);
-            }
-        });
+        button.addActionListener(e -> cardLayout.next(panel));
         panel.add(getImage().toString(), button);
 
         return button;
