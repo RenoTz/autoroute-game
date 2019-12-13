@@ -80,7 +80,7 @@ public class ActionService implements Serializable
         final Carte nextCard = CarteUtils.getNextCard();
         nextCard.setVisible(true);
 
-        final int previousIndex = currentIndex != 0 ? currentIndex - 1 : (sens == -1 ? 1 : 0);
+        final int previousIndex = currentIndex != 0 ? currentIndex - 1 : (sens == -1 ? 6 : 0);
         final int nextIndex = currentIndex != cardLayouts.size() - 1 ? currentIndex + 1 : 0;
 
         //        buttons.get(nextIndex).setIcon(nextCard.getImage());
