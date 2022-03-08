@@ -7,16 +7,16 @@ import org.slf4j.LoggerFactory;
 
 public class Main
 {
-    private static final Logger log = LoggerFactory.getLogger(Main.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-    public static void main(final String[] args)
+    public static void main(String[] args)
     {
         EventQueue.invokeLater(() -> {
             try {
-                final AutorouteUI frame = new AutorouteUI();
+                AutorouteUI frame = new AutorouteUI();
                 frame.setVisible(true);
             } catch (final Exception e) {
-                log.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         });
     }

@@ -1,26 +1,40 @@
 package org.game.autoroute.utils;
 
-import java.applet.Applet;
-import java.applet.AudioClip;
-import java.net.MalformedURLException;
-import java.net.URL;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SoundUtils
-{
+import java.io.File;
+import java.io.IOException;
 
-    private static AudioClip takeCard = null;
+public class SoundUtils {
+
+    static Logger LOGGER = LoggerFactory.getLogger(SoundUtils.class);
+    static Clip clip;
 
     static {
         try {
-            final URL urlTakeCard = new URL("file", ConstantesUtils.PATH_RESOURCES_SOUND, "takeCard.wav");
-            takeCard = Applet.newAudioClip(urlTakeCard);
-        } catch (final MalformedURLException e) {
-            e.printStackTrace();
+            // create AudioInputStream object
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(ConstantesUtils.PATH_RESOURCES_SOUND, ConstantesUtils.TAKE_CARD).getAbsoluteFile());
+
+            // create clip reference
+            clip = AudioSystem.getClip();
+
+            // open audioInputStream to the clip
+            clip.open(audioInputStream);
+            clip.start();
         }
+        catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+
     }
 
-    public static void playTakeCard()
-    {
-        takeCard.play();
+    public static void playTakeCard() {
+        clip.start();
     }
 }
