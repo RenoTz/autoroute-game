@@ -1,22 +1,17 @@
 package org.game.autoroute.service;
 
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Objects;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import org.game.autoroute.model.Carte;
-import org.game.autoroute.utils.CarteUtils;
+import org.game.autoroute.utils.CardUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ActionService implements Serializable
-{
+import javax.swing.*;
+import java.awt.*;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
+
+public class ActionService implements Serializable {
 
     private static final long serialVersionUID = -7337095939630436762L;
 
@@ -24,33 +19,32 @@ public class ActionService implements Serializable
 
     private static final String PATTER_LOG = "{} de {}";
 
-    public ImageIcon getImageCard()
-    {
-        final Carte carte = CarteUtils.getNextCard();
+    private CardUtils cardUtils;
+
+    public ImageIcon getImageCard(CardUtils cardUtils) {
+        this.cardUtils = cardUtils;
+        final Carte carte = cardUtils.getNextCard();
         carte.setVisible(true);
         log.info(PATTER_LOG, carte.getCarteEnum(), carte.getCouleur());
         return carte.getImage();
     }
 
-    private Carte getCurrentCard(final JButton currentButtnon)
-    {
-        final Carte carte =
-            CarteUtils.jeuDeCartes.stream().filter(c -> c.getImage().equals(currentButtnon.getIcon())).findFirst()
-                .orElse(null);
+    private Carte getCurrentCard(final JButton currentButtnon) {
+        final Carte carte = cardUtils.getCards().stream().filter(c -> c.getImage().equals(currentButtnon.getIcon())).findFirst()
+                        .orElse(null);
         if (Objects.isNull(carte)) {
             log.error("Plus de cartes. On reprends un nouveau jeu de cartes.");
-            CarteUtils.jeuDeCartes.forEach(c -> c.setVisible(false));
+            cardUtils.getCards().forEach(c -> c.setVisible(false));
         }
         return carte;
     }
 
     public boolean more(final List<CardLayout> cardLayouts, final List<JPanel> cardPanels, final int currentIndex,
-        final List<JLabel> cursors, final int sens)
-    {
+                        final List<JLabel> cursors, final int sens) {
         final JButton currentButtnon =
-            (JButton) cardPanels.get(currentIndex).getComponent(cardPanels.get(currentIndex).getComponentCount() - 1);
+                (JButton) cardPanels.get(currentIndex).getComponent(cardPanels.get(currentIndex).getComponentCount() - 1);
         final Carte currentCard = this.getCurrentCard(currentButtnon);
-        final Carte nextCard = CarteUtils.getNextCard();
+        final Carte nextCard = cardUtils.getNextCard();
         nextCard.setVisible(true);
 
         final int previousIndex = currentIndex != 0 ? currentIndex - 1 : (sens == -1 ? 6 : 0);
@@ -72,12 +66,11 @@ public class ActionService implements Serializable
     }
 
     public boolean less(final List<CardLayout> cardLayouts, final List<JPanel> cardPanels, final int currentIndex,
-        final List<JLabel> cursors, final int sens)
-    {
+                        final List<JLabel> cursors, final int sens) {
         final JButton currentButtnon =
-            (JButton) cardPanels.get(currentIndex).getComponent(cardPanels.get(currentIndex).getComponentCount() - 1);
+                (JButton) cardPanels.get(currentIndex).getComponent(cardPanels.get(currentIndex).getComponentCount() - 1);
         final Carte currentCard = this.getCurrentCard(currentButtnon);
-        final Carte nextCard = CarteUtils.getNextCard();
+        final Carte nextCard = cardUtils.getNextCard();
         nextCard.setVisible(true);
 
         final int previousIndex = currentIndex != 0 ? currentIndex - 1 : (sens == -1 ? 6 : 0);
@@ -100,20 +93,18 @@ public class ActionService implements Serializable
     }
 
     private boolean correct(final List<JPanel> cardPanels, final int currentIndex, final List<JLabel> cursors,
-        final int nextIndex)
-    {
+                            final int nextIndex) {
         cardPanels.get(nextIndex).setBorder(null);
         cursors.get(currentIndex).setIcon(null);
-        cursors.get(nextIndex).setIcon(CarteUtils.getIconCursor());
+        cursors.get(nextIndex).setIcon(cardUtils.getIconCursor());
 
         return true;
     }
 
     private boolean wrong(final List<JPanel> cardPanels, final int currentIndex, final List<JLabel> cursors,
-        final int previousIndex, final int nextIndex)
-    {
+                          final int previousIndex, final int nextIndex) {
         cursors.get(currentIndex).setIcon(null);
-        cursors.get(previousIndex).setIcon(CarteUtils.getIconCursor());
+        cursors.get(previousIndex).setIcon(cardUtils.getIconCursor());
         cardPanels.get(nextIndex).setBorder(BorderFactory.createEtchedBorder(Color.RED, Color.DARK_GRAY));
 
         return false;

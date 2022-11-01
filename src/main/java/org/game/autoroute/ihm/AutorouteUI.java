@@ -1,75 +1,47 @@
 package org.game.autoroute.ihm;
 
 import com.google.common.collect.Lists;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.ActionListener;
-import java.util.Collections;
-import java.util.List;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import org.game.autoroute.service.ActionService;
-import org.game.autoroute.utils.CarteUtils;
+import org.game.autoroute.utils.CardUtils;
 import org.game.autoroute.utils.ConstantesUtils;
 import org.game.autoroute.utils.SoundUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AutorouteUI extends JFrame
-{
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.Collections;
+import java.util.List;
 
-    private static final long serialVersionUID = -6926173123931888797L;
+public class AutorouteUI extends JFrame {
 
     private static final Logger log = LoggerFactory.getLogger(AutorouteUI.class);
 
     private static final String LABEL_MSG_GORGEE = "TU BOIS +%d";
 
     private ActionService actionService;
-
+    private CardUtils cardUtils;
     private List<CardLayout> cardLayouts;
-
     private List<JPanel> cardPanels;
-
     private List<JLabel> cursors;
-
     private JLabel lblNbGorgees;
-
     private JLabel lblMessage;
-
     private JLabel lblActionIcon;
-
     private int currentIndex;
-
     private int nbGorgeesTotal;
-
-    private int serie;
-
     private int sens = 1;
 
     private String playerName1;
-
     private String playerName2;
 
-    /**
-     * Create the frame.
-     */
-    public AutorouteUI()
-    {
+    public AutorouteUI() {
         this.init();
         this.setup();
     }
 
-    private void init()
-    {
+    private void init() {
         this.actionService = new ActionService();
         this.cardLayouts = Lists.newArrayList();
         this.cardPanels = Lists.newArrayList();
@@ -77,13 +49,13 @@ public class AutorouteUI extends JFrame
         this.currentIndex = 0;
 
         this.initialiserLesJoueurs();
+        this.cardUtils = new CardUtils();
     }
 
-    private void setup()
-    {
+    private void setup() {
         this.setTitle("Autoroute");
         this.setForeground(Color.WHITE);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setBounds(100, 100, 800, 680);
 
         final JPanel contentPane = new JPanel();
@@ -97,7 +69,7 @@ public class AutorouteUI extends JFrame
 
         final JLabel lblSelectLeft1 = new JLabel();
         lblSelectLeft1.setHorizontalAlignment(SwingConstants.CENTER);
-        lblSelectLeft1.setIcon(CarteUtils.getIconCursor());
+        lblSelectLeft1.setIcon(cardUtils.getIconCursor());
         panelCursor.add(lblSelectLeft1);
         this.cursors.add(lblSelectLeft1);
 
@@ -152,7 +124,7 @@ public class AutorouteUI extends JFrame
         this.cardLayouts.add(cardLayoutLeft1);
 
         final JButton btnLeft1 = new JButton();
-        final ImageIcon imageIconCard = this.actionService.getImageCard();
+        final ImageIcon imageIconCard = this.actionService.getImageCard(cardUtils);
         panelLeft1.add(imageIconCard.toString(), btnLeft1);
         btnLeft1.setIcon(imageIconCard);
         btnLeft1.addActionListener(this.nextCard(cardLayoutLeft1, panelLeft1));
@@ -301,32 +273,29 @@ public class AutorouteUI extends JFrame
         panelGorgees.add(lblJoueur2);
     }
 
-    private ActionListener more()
-    {
+    private ActionListener more() {
         return e -> {
             SoundUtils.playTakeCard();
             this.checkChangementDeSens();
             final boolean more = AutorouteUI.this.actionService
-                .more(AutorouteUI.this.cardLayouts, AutorouteUI.this.cardPanels, AutorouteUI.this.currentIndex,
-                    AutorouteUI.this.cursors, AutorouteUI.this.sens);
+                    .more(AutorouteUI.this.cardLayouts, AutorouteUI.this.cardPanels, AutorouteUI.this.currentIndex,
+                            AutorouteUI.this.cursors, AutorouteUI.this.sens);
             AutorouteUI.this.postCalculsAndUpdate(more);
         };
     }
 
-    private ActionListener less()
-    {
+    private ActionListener less() {
         return e -> {
             SoundUtils.playTakeCard();
             this.checkChangementDeSens();
             final boolean less = AutorouteUI.this.actionService
-                .less(AutorouteUI.this.cardLayouts, AutorouteUI.this.cardPanels, AutorouteUI.this.currentIndex,
-                    AutorouteUI.this.cursors, AutorouteUI.this.sens);
+                    .less(AutorouteUI.this.cardLayouts, AutorouteUI.this.cardPanels, AutorouteUI.this.currentIndex,
+                            AutorouteUI.this.cursors, AutorouteUI.this.sens);
             this.postCalculsAndUpdate(less);
         };
     }
 
-    private void postCalculsAndUpdate(final boolean success)
-    {
+    private void postCalculsAndUpdate(final boolean success) {
         if (success) {
             AutorouteUI.this.currentIndex++;
             AutorouteUI.this.calculNbGorgeesSuccess();
@@ -338,33 +307,28 @@ public class AutorouteUI extends JFrame
         AutorouteUI.this.checkIfWon();
     }
 
-    private void calculNbGorgeesSuccess()
-    {
+    private void calculNbGorgeesSuccess() {
         // check si le joueur passe un péage : +1 gorgée le cas échéant
         final int nbGorgeesSuppl = this.currentIndex == 2 || this.currentIndex == 5 ? 1 : 0;
 
         // Affichage nombre de gorgées à boire + maj nbGorgeesTotal
         this.lblMessage.setText(String.format(LABEL_MSG_GORGEE, nbGorgeesSuppl));
         this.nbGorgeesTotal += nbGorgeesSuppl;
-
-        // on incrémente le nombre de série
-        this.serie++;
     }
 
-    private void calculNbGorgeesFailed()
-    {
+    private void calculNbGorgeesFailed() {
         // check si l'échec est dû à l'encontre d'un double : +2 gorgées le cas échéant sinon +1
         final int previousIndex =
-            this.currentIndex != this.cardLayouts.size() - 1 ? this.currentIndex + 1 : this.cardLayouts.size() - 2;
+                this.currentIndex != this.cardLayouts.size() - 1 ? this.currentIndex + 1 : this.cardLayouts.size() - 2;
         final int beforePreviousIndex =
-            previousIndex != this.cardLayouts.size() - 1 ? previousIndex + 1 : this.cardLayouts.size() - 2;
+                previousIndex != this.cardLayouts.size() - 1 ? previousIndex + 1 : this.cardLayouts.size() - 2;
 
         final JButton previousButton = (JButton) this.cardPanels.get(previousIndex)
-            .getComponent(this.cardPanels.get(previousIndex).getComponentCount() - 1);
+                .getComponent(this.cardPanels.get(previousIndex).getComponentCount() - 1);
         final JButton beforePreviousButton = (JButton) this.cardPanels.get(beforePreviousIndex)
-            .getComponent(this.cardPanels.get(beforePreviousIndex).getComponentCount() - 1);
+                .getComponent(this.cardPanels.get(beforePreviousIndex).getComponentCount() - 1);
         int nbGorgeesSuppl =
-            previousButton.getIcon().toString().equals(beforePreviousButton.getIcon().toString()) ? 2 : 1;
+                previousButton.getIcon().toString().equals(beforePreviousButton.getIcon().toString()) ? 2 : 1;
 
         // check si le joueur passe un péage : +1 gorgée le cas échéant
         nbGorgeesSuppl += this.currentIndex == 1 || this.currentIndex == 4 ? 1 : 0;
@@ -372,34 +336,26 @@ public class AutorouteUI extends JFrame
         // Affichage nombre de gorgées à boire + maj nbGorgeesTotal
         this.lblMessage.setText(String.format(LABEL_MSG_GORGEE, nbGorgeesSuppl));
         this.nbGorgeesTotal += nbGorgeesSuppl;
-        // on remet à zéro le nombre de série
-        this.serie = 0;
-
     }
 
-    private ActionListener nextCard(final CardLayout cardLayout, final JPanel panel)
-    {
+    private ActionListener nextCard(final CardLayout cardLayout, final JPanel panel) {
         return e -> cardLayout.next(panel);
     }
 
-    private void updateLabel()
-    {
+    private void updateLabel() {
         AutorouteUI.this.updateLabelNbGorgees();
         this.lblActionIcon.setIcon(new ImageIcon(ConstantesUtils.TU_BOIS));
-        log.info("currentIndex : {}", AutorouteUI.this.currentIndex);
+        log.info("currentIndex : {}", currentIndex);
     }
 
-    private void checkChangementDeSens()
-    {
-        if (AutorouteUI.this.currentIndex == 6 && AutorouteUI.this.sens == 1
-            || AutorouteUI.this.currentIndex == 0 && AutorouteUI.this.sens == -1) {
-            AutorouteUI.this.changementDeSens();
+    private void checkChangementDeSens() {
+        if (currentIndex == 6 && sens == 1 || currentIndex == 0 && sens == -1) {
+            changementDeSens();
         }
     }
 
-    private void changementDeSens()
-    {
-        this.sens = this.sens == 1 ? -1 : 1;
+    private void changementDeSens() {
+        this.sens = -this.sens;
         this.currentIndex = this.sens == 1 ? 6 : 0;
         Collections.reverse(this.cursors);
         Collections.reverse(this.cardLayouts);
@@ -407,21 +363,18 @@ public class AutorouteUI extends JFrame
         log.info("changement de sens : {}", this.sens == 1 ? "ALLER" : "RETOUR");
     }
 
-    private void updateLabelNbGorgees()
-    {
+    private void updateLabelNbGorgees() {
         this.lblNbGorgees.setText("GORGEES : " + this.nbGorgeesTotal);
     }
 
-    private void checkIfWon()
-    {
+    private void checkIfWon() {
         if (this.currentIndex == 6 && this.sens == -1) {
             this.lblActionIcon.setIcon(new ImageIcon(ConstantesUtils.SAOUL));
-            //            JOptionPane.showMessageDialog(this, "YOU WON !!!");
+            JOptionPane.showMessageDialog(this, "YOU WON !!!");
         }
     }
 
-    private void initialiserLesJoueurs()
-    {
+    private void initialiserLesJoueurs() {
         // Creation du joueur 1
         this.playerName1 = JOptionPane.showInputDialog("Veuillez entrer le nom du joueur 1 :", "Joueur 1");
         // Creation du joueur 2

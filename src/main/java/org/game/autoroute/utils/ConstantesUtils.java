@@ -1,13 +1,11 @@
 package org.game.autoroute.utils;
 
-public class ConstantesUtils
-{
+public class ConstantesUtils {
 
-    static final String PATH_RESOURCES_SOUND = "src/main/resource/sound/";
+    public static final String PATH_RESOURCES_SOUND = ConstantesUtils.class.getClassLoader().getResource("sound/").getPath();
+    private static final String PATH_RESOURCES_IMG = ConstantesUtils.class.getClassLoader().getResource("img/").getPath();
 
-    static final String TAKE_CARD = "takeCard.wav";
-
-    private static final String PATH_RESOURCES_IMG = "src/main/resource/img/";
+    private static final String TAKE_CARD = "takeCard.wav";
 
     private static final String PNG = ".png";
 
