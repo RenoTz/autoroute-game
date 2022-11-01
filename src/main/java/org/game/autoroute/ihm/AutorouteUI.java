@@ -42,7 +42,7 @@ public class AutorouteUI extends JFrame {
     }
 
     private void init() {
-        this.actionService = new ActionService();
+        this.actionService = new ActionService(cardUtils);
         this.cardLayouts = Lists.newArrayList();
         this.cardPanels = Lists.newArrayList();
         this.cursors = Lists.newArrayList();

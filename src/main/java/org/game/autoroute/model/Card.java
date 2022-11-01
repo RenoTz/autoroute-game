@@ -7,12 +7,12 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import org.game.autoroute.utils.ConstantesUtils;
 
-public class Carte implements Serializable
+public class Card implements Serializable
 {
 
     private static final long serialVersionUID = -7368611572002865056L;
 
-    private final CarteEnum carteEnum;
+    private final CardEnum cardEnum;
 
     private final ColorEnum couleur;
 
@@ -20,9 +20,9 @@ public class Carte implements Serializable
 
     private boolean visible;
 
-    public Carte(final CarteEnum carteEnum, final ColorEnum couleur, final ImageIcon image)
+    public Card(final CardEnum cardEnum, final ColorEnum couleur, final ImageIcon image)
     {
-        this.carteEnum = carteEnum;
+        this.cardEnum = cardEnum;
         this.couleur = couleur;
         this.image = image;
     }
@@ -32,14 +32,14 @@ public class Carte implements Serializable
         return this.couleur;
     }
 
-    public CarteEnum getCarteEnum()
+    public CardEnum getCarteEnum()
     {
-        return this.carteEnum;
+        return this.cardEnum;
     }
 
     public Integer getValeur()
     {
-        return this.carteEnum.getValeur();
+        return this.cardEnum.getValeur();
     }
 
     public ImageIcon getImage()
@@ -50,7 +50,7 @@ public class Carte implements Serializable
     @Override
     public String toString()
     {
-        return this.carteEnum.name().concat(" de ".concat(this.couleur.name()));
+        return this.cardEnum.name().concat(" de ".concat(this.couleur.name()));
     }
 
     public boolean isVisible()
