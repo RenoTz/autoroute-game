@@ -50,7 +50,6 @@ public class AutorouteUI extends JFrame {
         currentIndex = 0;
 
         this.initialiserLesJoueurs();
-        this.cardUtils = new CardUtils();
     }
 
     private void setup() {
@@ -278,10 +277,7 @@ public class AutorouteUI extends JFrame {
         return e -> {
             SoundUtils.play();
             this.checkChangementDeSens();
-            final boolean more = AutorouteUI.this.actionService
-                    .more(AutorouteUI.this.cardLayouts, AutorouteUI.this.cardPanels, AutorouteUI.this.currentIndex,
-                            AutorouteUI.this.cursors, AutorouteUI.this.sens);
-            AutorouteUI.this.postCalculsAndUpdate(more);
+            postCalculsAndUpdate(actionService.more(cardLayouts, cardPanels, currentIndex, cursors, sens));
         };
     }
 
@@ -289,23 +285,20 @@ public class AutorouteUI extends JFrame {
         return e -> {
             SoundUtils.play();
             this.checkChangementDeSens();
-            final boolean less = AutorouteUI.this.actionService
-                    .less(AutorouteUI.this.cardLayouts, AutorouteUI.this.cardPanels, AutorouteUI.this.currentIndex,
-                            AutorouteUI.this.cursors, AutorouteUI.this.sens);
-            this.postCalculsAndUpdate(less);
+            this.postCalculsAndUpdate(actionService.less(cardLayouts, cardPanels, currentIndex, cursors, sens));
         };
     }
 
     private void postCalculsAndUpdate(boolean success) {
         if (success) {
-            AutorouteUI.this.currentIndex++;
-            AutorouteUI.this.calculNbGorgeesSuccess();
+            currentIndex++;
+            calculNbGorgeesSuccess();
         } else {
-            AutorouteUI.this.currentIndex = AutorouteUI.this.currentIndex != 0 ? AutorouteUI.this.currentIndex - 1 : 0;
+            currentIndex = currentIndex != 0 ? currentIndex - 1 : 0;
             this.calculNbGorgeesFailed();
         }
-        AutorouteUI.this.updateLabel();
-        AutorouteUI.this.checkIfWon();
+        updateLabel();
+        checkIfWon();
     }
 
     private void calculNbGorgeesSuccess() {
@@ -344,7 +337,7 @@ public class AutorouteUI extends JFrame {
     }
 
     private void updateLabel() {
-        AutorouteUI.this.updateLabelNbGorgees();
+        updateLabelNbGorgees();
         this.lblActionIcon.setIcon(new ImageIcon(ConstantesUtils.TU_BOIS));
         log.info("currentIndex : {}", currentIndex);
     }
