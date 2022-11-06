@@ -7,8 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import javax.sound.sampled.*;
 
-
-public class SoundUtils {
+public class SoundUtils
+{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SoundUtils.class);
 
@@ -48,5 +48,4 @@ public class SoundUtils {
             LOGGER.error(e.getMessage(), e);
         }
     }
-
 }
