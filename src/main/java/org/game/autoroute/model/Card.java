@@ -5,14 +5,14 @@ import java.io.Serializable;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+
 import org.game.autoroute.utils.ConstantesUtils;
 
-public class Carte implements Serializable
-{
+public class Card implements Serializable {
 
     private static final long serialVersionUID = -7368611572002865056L;
 
-    private final CarteEnum carteEnum;
+    private final CardEnum cardEnum;
 
     private final ColorEnum couleur;
 
@@ -20,46 +20,38 @@ public class Carte implements Serializable
 
     private boolean visible;
 
-    public Carte(final CarteEnum carteEnum, final ColorEnum couleur, final ImageIcon image)
-    {
-        this.carteEnum = carteEnum;
+    public Card(final CardEnum cardEnum, final ColorEnum couleur, final ImageIcon image) {
+        this.cardEnum = cardEnum;
         this.couleur = couleur;
         this.image = image;
     }
 
-    public ColorEnum getCouleur()
-    {
+    public ColorEnum getCouleur() {
         return this.couleur;
     }
 
-    public CarteEnum getCarteEnum()
-    {
-        return this.carteEnum;
+    public CardEnum getCarteEnum() {
+        return this.cardEnum;
     }
 
-    public Integer getValeur()
-    {
-        return this.carteEnum.getValeur();
+    public Integer getValeur() {
+        return this.cardEnum.getValeur();
     }
 
-    public ImageIcon getImage()
-    {
+    public ImageIcon getImage() {
         return this.isVisible() ? this.image : new ImageIcon(ConstantesUtils.BACK_CARD_BLUE_V);
     }
 
     @Override
-    public String toString()
-    {
-        return this.carteEnum.name().concat(" de ".concat(this.couleur.name()));
+    public String toString() {
+        return this.cardEnum.name().concat(" de ".concat(this.couleur.name()));
     }
 
-    public boolean isVisible()
-    {
+    public boolean isVisible() {
         return this.visible;
     }
 
-    public void setVisible(final boolean visible)
-    {
+    public void setVisible(final boolean visible) {
         this.visible = visible;
     }
 
