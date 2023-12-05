@@ -64,7 +64,7 @@
       <artifactId>logback-classic</artifactId>
       <groupId>ch.qos.logback</groupId>
       <scope>runtime</scope>
-      <version>1.2.3</version>
+      <version>1.2.13</version>
     </dependency>
     <dependency>
       <artifactId>junit</artifactId>
